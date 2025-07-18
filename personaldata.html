@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avaneesh Awasthi - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .skill-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 4px;
+      animation: fillBar 2s ease-in-out;
+    }
+    
+    @keyframes fillBar {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .typewriter {
+      overflow: hidden;
+      border-right: .15em solid #667eea;
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: .15em;
+      animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+    }
+    
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #667eea; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">
+          Avaneesh
+        </div>
+        <div class="hidden md:flex space-x-8">
+          <a href="#home" class="text-gray-700 hover:text-purple-600 transition-colors">Home</a>
+          <a href="#about" class="text-gray-700 hover:text-purple-600 transition-colors">About</a>
+          <a href="#experience" class="text-gray-700 hover:text-purple-600 transition-colors">Experience</a>
+          <a href="#projects" class="text-gray-700 hover:text-purple-600 transition-colors">Projects</a>
+          <a href="#contact" class="text-gray-700 hover:text-purple-600 transition-colors">Contact</a>
+        </div>
+        <button class="md:hidden">
+          <i class="fas fa-bars text-gray-700"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="min-h-screen gradient-bg flex items-center justify-center text-white relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="relative z-10 text-center max-w-4xl mx-auto px-4">
+      <div class="floating mb-8">
+        <div class="w-32 h-32 mx-auto rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-6xl mb-6">
+          👨‍💻
+        </div>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold mb-4">
+        Avaneesh Awasthi
+      </h1>
+      <div class="text-xl md:text-2xl mb-8 typewriter">
+        Frontend Developerand Data Science & Student
+      </div>
+      <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-90">
+        Passionate about creating beautiful, functional web experiences with clean code and scalable design.Data Science student skilled in Python, SQL, and data visualization. Learning every day to solve real-world problems with data."
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" 
+                class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+          Get In Touch
+        </button>
+        <button onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" 
+                class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-colors">
+          View My Work
+        </button>
+      </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full floating" style="animation-delay: -2s;"></div>
+    <div class="absolute bottom-20 right-10 w-16 h-16 bg-white/10 rounded-full floating" style="animation-delay: -4s;"></div>
+    <div class="absolute top-1/2 left-20 w-12 h-12 bg-white/10 rounded-full floating" style="animation-delay: -1s;"></div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">About Me</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mx-auto"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="text-2xl font-semibold text-gray-800 mb-6">Education & Background</h3>
+          <div class="bg-gray-50 p-6 rounded-xl mb-6">
+            <h4 class="font-semibold text-lg text-purple-600 mb-2">Bachelor of Computer Application</h4>
+            <p class="text-gray-600 mb-2">School of Management Sciences, Lucknow</p>
+            <p class="text-sm text-gray-500">CGPA: 7.00</p>
+          </div>
+          
+          <h4 class="font-semibold text-lg mb-4">Key Skills</h4>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium">HTML/CSS</span>
+                <span class="text-sm text-gray-500">90%</span>
+              </div>
+              <div class="bg-gray-200 rounded-full h-2">
+                <div class="skill-bar w-[90%]"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium">JavaScript</span>
+                <span class="text-sm text-gray-500">85%</span>
+              </div>
+               <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium">Excel</span>
+                <span class="text-sm text-gray-500">89%</span>
+              </div>
+              <div class="bg-gray-200 rounded-full h-2">
+                <div class="skill-bar w-[85%]"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium">Python</span>
+                <span class="text-sm text-gray-500">80%</span>
+              </div>
+               <div class="flex justify-between mb-2">
+                <span class="text-sm font-medium">SQL</span>
+                <span class="text-sm text-gray-500">85%</span>
+              </div>
+              <div class="bg-gray-200 rounded-full h-2">
+                <div class="skill-bar w-[80%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <div class="bg-gradient-to-br from-purple-50 to-blue-50 p-8 rounded-2xl">
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">My Journey</h3>
+            <p class="text-gray-600 leading-relaxed mb-6">
+              As a passionate Frontend Developer and Computer Application student, I bring together academic knowledge and practical experience. My 2-year internship at Varcas Software Solution has given me hands-on experience in web design, UI development, and software building. Additionally, during my 3rd year, I completed a 2-month training in Data Science, where I gained practical insights into data analysis, visualization, and working with real-world datasets.
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+              I'm committed to writing clean, scalable code and creating user-friendly interfaces that make a difference. Always eager to learn new technologies and take on challenging projects.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience" class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">Experience & Certificates</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mx-auto"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Experience Card -->
+        <div class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-briefcase text-purple-600"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800">.NET Intern</h3>
+              <p class="text-purple-600">Varcas Software Solution</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-4"> 1.5month Experience</p>
+          <ul class="space-y-2 text-gray-600">
+            <li class="flex items-center">
+              <i class="fas fa-check text-green-500 mr-2"></i>
+              Website design and UI development
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-green-500 mr-2"></i>
+              Software building and front-end design
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-check text-green-500 mr-2"></i>
+              Data Management
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Certificates Card -->
+        <div class="bg-white p-8 rounded-2xl shadow-lg card-hover">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+              <i class="fas fa-certificate text-blue-600"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-gray-800">Certifications</h3>
+              <p class="text-blue-600">Professional Development</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <i class="fas fa-award text-yellow-500 mr-3"></i>
+              <div>
+                <p class="font-medium text-gray-800">Intro to Data Science</p>
+                <p class="text-sm text-gray-500">Cisco</p>
+              </div>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <i class="fas fa-shield-alt text-red-500 mr-3"></i>
+              <div>
+                <p class="font-medium text-gray-800">Cyber Security</p>
+                <p class="text-sm text-gray-500">Tech Mahindra</p>
+              </div>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <i class="fas fa-code text-purple-500 mr-3"></i>
+              <div>
+                <p class="font-medium text-gray-800">Web Design with HTML/CSS</p>
+                <p class="text-sm text-gray-500">NSDC</p>
+              </div>
+            </div>
+            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+              <i class="fas fa-chart-line text-green-500 mr-3"></i>
+              <div>
+                <p class="font-medium text-gray-800">Excel, Time Management, Algorithms</p>
+                <p class="text-sm text-gray-500">Simple Learn</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">My Projects</h2>
+        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mx-auto"></div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- College Projects -->
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl card-hover">
+          <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
+            <i class="fas fa-utensils text-white"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Restaurant Project</h3>
+          <p class="text-gray-600 mb-4">College Project - 2023</p>
+          <p class="text-sm text-gray-500">A comprehensive restaurant management system with modern UI design.</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl card-hover">
+          <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
+            <i class="fas fa-sms text-white"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">SMS Added</h3>
+          <p class="text-gray-600 mb-4">College Project - 2023</p>
+          <p class="text-sm text-gray-500">SMS integration system with user-friendly interface and functionality.</p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl card-hover">
+          <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
+            <i class="fas fa-map-marked-alt text-white"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">3D game</h3>
+          <p class="text-gray-600 mb-4">College Project - 2024</p>
+          <p class="text-sm text-gray-500">games mode.</p>
+        </div>
+        
+        <!-- Professional Project -->
+        <div class="md:col-span-2 lg:col-span-3 bg-gradient-to-r from-purple-500 to-blue-600 p-8 rounded-2xl text-white card-hover">
+          <div class="flex items-center mb-4">
+            <div class="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center mr-6">
+              <i class="fas fa-globe text-white text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-semibold mb-2">Varcas Website</h3>
+              <p class="text-purple-100">Professional Web Design & Development</p>
+            </div>
+          </div>
+          <p class="text-purple-100 leading-relaxed">
+            Complete website design and development for Varcas Software Solution, featuring modern UI/UX design, 
+            responsive layout, and advanced web technologies. This project showcases my ability to deliver 
+            professional-grade web solutions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 gradient-bg text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-4">Let's Work Together</h2>
+      <div class="w-20 h-1 bg-white mx-auto mb-8"></div>
+      <p class="text-xl mb-12 opacity-90">
+        Ready to bring your ideas to life? Let's create something amazing together!
+      </p>
+      
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl card-hover">
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-phone text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Phone</h3>
+          <p class="opacity-90">8887847102</p>
+        </div>
+        
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl card-hover">
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-envelope text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Email</h3>
+          <p class="opacity-90">awasthiavanish515@gmail.com</p>
+        </div>
+        
+        <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl card-hover">
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-map-marker-alt text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold mb-2">Location</h3>
+          <p class="opacity-90">Lucknow, India</p>
+        </div>
+      </div>
+      
+      <div class="flex justify-center space-x-6">
+        <a href="tel:8887847102" class="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors flex items-center">
+          <i class="fas fa-phone mr-2"></i>
+          Call Now
+        </a>
+        <a href="mailto:awasthiavanish515@gmail.com" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-colors flex items-center">
+          <i class="fas fa-envelope mr-2"></i>
+          Send Email
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-8">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2025 Avaneesh Awasthi. All rights reserved.</p>
+      <p class="text-gray-400 mt-2">Crafted with ❤️ and lots of ☕</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add scroll effect to navigation
+    window.addEventListener('scroll', function() {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 100) {
+        nav.classList.add('shadow-lg');
+      } else {
+        nav.classList.remove('shadow-lg');
+      }
+    });
+
+    // Animate skill bars when they come into view
+    const observerOptions = {
+      threshold: 0.5,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const skillBars = entry.target.querySelectorAll('.skill-bar');
+          skillBars.forEach(bar => {
+            bar.style.animation = 'fillBar 2s ease-in-out';
+          });
+        }
+      });
+    }, observerOptions);
+
+    const aboutSection = document.querySelector('#about');
+    if (aboutSection) {
+      observer.observe(aboutSection);
+    }
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'960bbeade22891df',t:'MTc1Mjc3NjMzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
