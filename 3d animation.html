@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Explorer - 3D Space Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            overflow: hidden;
+            color: white;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #canvas {
+            display: block;
+            cursor: grab;
+        }
+
+        #canvas:active {
+            cursor: grabbing;
+        }
+
+        .ui-panel {
+            position: absolute;
+            background: rgba(0, 20, 40, 0.9);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        #controlPanel {
+            top: 20px;
+            left: 20px;
+            width: 280px;
+        }
+
+        #infoPanel {
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #speedControls {
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-button {
+            background: linear-gradient(145deg, #2563eb, #1d4ed8);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-button:hover {
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            transform: translateY(-1px);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+        }
+
+        .celestial-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            background: linear-gradient(145deg, #059669, #047857);
+        }
+
+        .celestial-button:hover {
+            background: linear-gradient(145deg, #10b981, #059669);
+        }
+
+        .speed-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-section {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+        }
+
+        .info-section:last-child {
+            border-bottom: none;
+        }
+
+        .distance-info {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .physics-tip {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            padding: 8px;
+            margin: 10px 0;
+            font-size: 12px;
+            border-radius: 0 5px 5px 0;
+        }
+
+        #instructions {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="canvas"></canvas>
+        
+        <div id="controlPanel" class="ui-panel">
+            <h3>🚀 Navigation</h3>
+            <button class="control-button celestial-button" onclick="focusOnBody('earth')">Focus on Earth</button>
+            <button class="control-button celestial-button" onclick="focusOnBody('moon')">Focus on Moon</button>
+            <button class="control-button celestial-button" onclick="focusOnBody('mars')">Focus on Mars</button>
+            <button class="control-button celestial-button" onclick="showFullSystem()">View Full System</button>
+            <button class="control-button" onclick="toggleOrbits()">Toggle Orbit Paths</button>
+        </div>
+
+        <div id="infoPanel" class="ui-panel">
+            <h3>📊 Celestial Information</h3>
+            <div id="bodyInfo">
+                <div class="info-section">
+                    <strong>Welcome to Solar System Explorer!</strong>
+                    <p>Click on celestial bodies or use navigation buttons to explore.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="speedControls" class="ui-panel">
+            <button class="control-button" onclick="changeSpeed(-1)">⏪ Slower</button>
+            <div class="speed-display">Speed: <span id="speedValue">1x</span></div>
+            <button class="control-button" onclick="changeSpeed(1)">⏩ Faster</button>
+            <button class="control-button" onclick="togglePause()">⏸️ Pause</button>
+        </div>
+
+        <div id="instructions">
+            <strong>Controls:</strong><br>
+            • Drag to rotate view<br>
+            • Scroll to zoom<br>
+            • Click objects for info<br>
+            • Use navigation buttons
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Game state
+        let camera = {
+            x: 0,
+            y: 0,
+            zoom: 1,
+            rotation: 0
+        };
+
+        let mouse = {
+            x: 0,
+            y: 0,
+            down: false,
+            lastX: 0,
+            lastY: 0
+        };
+
+        let gameState = {
+            time: 0,
+            speed: 1,
+            paused: false,
+            showOrbits: true,
+            focusedBody: null
+        };
+
+        // Celestial bodies data
+        const celestialBodies = {
+            earth: {
+                name: "Earth",
+                radius: 20,
+                color: "#4ade80",
+                orbitRadius: 200,
+                orbitSpeed: 0.02,
+                angle: 0,
+                info: {
+                    diameter: "12,742 km",
+                    mass: "5.97 × 10²⁴ kg",
+                    distance: "149.6 million km from Sun",
+                    period: "365.25 days",
+                    facts: "Our home planet with 71% water coverage and perfect conditions for life."
+                }
+            },
+            moon: {
+                name: "Moon",
+                radius: 8,
+                color: "#e5e7eb",
+                orbitRadius: 40,
+                orbitSpeed: 0.1,
+                angle: 0,
+                parent: 'earth',
+                info: {
+                    diameter: "3,474 km",
+                    mass: "7.35 × 10²² kg",
+                    distance: "384,400 km from Earth",
+                    period: "27.3 days",
+                    facts: "Earth's only natural satellite, responsible for ocean tides and stabilizing Earth's rotation."
+                }
+            },
+            mars: {
+                name: "Mars",
+                radius: 15,
+                color: "#ef4444",
+                orbitRadius: 300,
+                orbitSpeed: 0.01,
+                angle: Math.PI,
+                info: {
+                    diameter: "6,779 km",
+                    mass: "6.39 × 10²³ kg",
+                    distance: "227.9 million km from Sun",
+                    period: "687 days",
+                    facts: "The Red Planet with polar ice caps and the largest volcano in the solar system."
+                }
+            }
+        };
+
+        // Physics and animation
+        function updatePositions() {
+            if (gameState.paused) return;
+            
+            gameState.time += gameState.speed;
+            
+            Object.keys(celestialBodies).forEach(key => {
+                const body = celestialBodies[key];
+                body.angle += body.orbitSpeed * gameState.speed;
+                
+                if (body.parent) {
+                    const parent = celestialBodies[body.parent];
+                    body.x = parent.x + Math.cos(body.angle) * body.orbitRadius;
+                    body.y = parent.y + Math.sin(body.angle) * body.orbitRadius;
+                } else {
+                    body.x = Math.cos(body.angle) * body.orbitRadius;
+                    body.y = Math.sin(body.angle) * body.orbitRadius;
+                }
+            });
+        }
+
+        // Rendering
+        function drawOrbit(centerX, centerY, radius) {
+            if (!gameState.showOrbits) return;
+            
+            ctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawCelestialBody(body, x, y) {
+            // Draw glow effect
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, body.radius * 2);
+            gradient.addColorStop(0, body.color + '80');
+            gradient.addColorStop(0.7, body.color + '20');
+            gradient.addColorStop(1, 'transparent');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(x, y, body.radius * 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw main body
+            ctx.fillStyle = body.color;
+            ctx.beginPath();
+            ctx.arc(x, y, body.radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add surface details
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.arc(x - body.radius * 0.3, y - body.radius * 0.3, body.radius * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw name
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(body.name, x, y + body.radius + 15);
+        }
+
+        function worldToScreen(worldX, worldY) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            const rotatedX = worldX * Math.cos(camera.rotation) - worldY * Math.sin(camera.rotation);
+            const rotatedY = worldX * Math.sin(camera.rotation) + worldY * Math.cos(camera.rotation);
+            
+            return {
+                x: centerX + (rotatedX + camera.x) * camera.zoom,
+                y: centerY + (rotatedY + camera.y) * camera.zoom
+            };
+        }
+
+        function screenToWorld(screenX, screenY) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            const relativeX = (screenX - centerX) / camera.zoom - camera.x;
+            const relativeY = (screenY - centerY) / camera.zoom - camera.y;
+            
+            return {
+                x: relativeX * Math.cos(-camera.rotation) - relativeY * Math.sin(-camera.rotation),
+                y: relativeX * Math.sin(-camera.rotation) + relativeY * Math.cos(-camera.rotation)
+            };
+        }
+
+        function render() {
+            // Clear canvas with space background
+            ctx.fillStyle = '#0f0f23';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars
+            ctx.fillStyle = 'white';
+            for (let i = 0; i < 100; i++) {
+                const x = (i * 1234) % canvas.width;
+                const y = (i * 5678) % canvas.height;
+                ctx.fillRect(x, y, 1, 1);
+            }
+            
+            // Draw Sun at center
+            const sunPos = worldToScreen(0, 0);
+            const sunGradient = ctx.createRadialGradient(sunPos.x, sunPos.y, 0, sunPos.x, sunPos.y, 30 * camera.zoom);
+            sunGradient.addColorStop(0, '#fbbf24');
+            sunGradient.addColorStop(0.5, '#f59e0b');
+            sunGradient.addColorStop(1, '#d97706');
+            
+            ctx.fillStyle = sunGradient;
+            ctx.beginPath();
+            ctx.arc(sunPos.x, sunPos.y, 25 * camera.zoom, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw orbits and bodies
+            Object.keys(celestialBodies).forEach(key => {
+                const body = celestialBodies[key];
+                
+                if (!body.parent) {
+                    const centerPos = worldToScreen(0, 0);
+                    drawOrbit(centerPos.x, centerPos.y, body.orbitRadius * camera.zoom);
+                } else {
+                    const parent = celestialBodies[body.parent];
+                    const parentPos = worldToScreen(parent.x, parent.y);
+                    drawOrbit(parentPos.x, parentPos.y, body.orbitRadius * camera.zoom);
+                }
+                
+                const bodyPos = worldToScreen(body.x, body.y);
+                drawCelestialBody(body, bodyPos.x, bodyPos.y);
+            });
+        }
+
+        // Event handlers
+        canvas.addEventListener('mousedown', (e) => {
+            mouse.down = true;
+            mouse.lastX = e.clientX;
+            mouse.lastY = e.clientY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (mouse.down) {
+                const deltaX = e.clientX - mouse.lastX;
+                const deltaY = e.clientY - mouse.lastY;
+                
+                camera.x += deltaX / camera.zoom;
+                camera.y += deltaY / camera.zoom;
+                
+                mouse.lastX = e.clientX;
+                mouse.lastY = e.clientY;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            mouse.down = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+            camera.zoom *= zoomFactor;
+            camera.zoom = Math.max(0.1, Math.min(5, camera.zoom));
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (mouse.down) return;
+            
+            const worldPos = screenToWorld(e.clientX, e.clientY);
+            
+            Object.keys(celestialBodies).forEach(key => {
+                const body = celestialBodies[key];
+                const distance = Math.sqrt((worldPos.x - body.x) ** 2 + (worldPos.y - body.y) ** 2);
+                
+                if (distance < body.radius) {
+                    showBodyInfo(key);
+                }
+            });
+        });
+
+        // UI Functions
+        function focusOnBody(bodyKey) {
+            const body = celestialBodies[bodyKey];
+            gameState.focusedBody = bodyKey;
+            
+            camera.x = -body.x;
+            camera.y = -body.y;
+            camera.zoom = 2;
+            
+            showBodyInfo(bodyKey);
+        }
+
+        function showFullSystem() {
+            camera.x = 0;
+            camera.y = 0;
+            camera.zoom = 0.8;
+            gameState.focusedBody = null;
+            
+            document.getElementById('bodyInfo').innerHTML = `
+                <div class="info-section">
+                    <strong>Solar System Overview</strong>
+                    <p>Viewing the inner solar system with Earth, Moon, and Mars.</p>
+                    <div class="physics-tip">
+                        <strong>Orbital Mechanics:</strong> Notice how closer planets orbit faster due to stronger gravitational pull from the Sun.
+                    </div>
+                </div>
+            `;
+        }
+
+        function showBodyInfo(bodyKey) {
+            const body = celestialBodies[bodyKey];
+            const info = body.info;
+            
+            let distanceInfo = '';
+            if (bodyKey === 'moon') {
+                const earth = celestialBodies.earth;
+                const distance = Math.sqrt((body.x - earth.x) ** 2 + (body.y - earth.y) ** 2);
+                distanceInfo = `<div class="distance-info">Current distance from Earth: ${(distance * 1000).toFixed(0)} km (scaled)</div>`;
+            } else if (bodyKey !== 'earth') {
+                const earth = celestialBodies.earth;
+                const distance = Math.sqrt((body.x - earth.x) ** 2 + (body.y - earth.y) ** 2);
+                distanceInfo = `<div class="distance-info">Current distance from Earth: ${(distance * 100000).toFixed(0)} km (scaled)</div>`;
+            }
+            
+            document.getElementById('bodyInfo').innerHTML = `
+                <div class="info-section">
+                    <strong>${body.name}</strong>
+                    <p><strong>Diameter:</strong> ${info.diameter}</p>
+                    <p><strong>Mass:</strong> ${info.mass}</p>
+                    <p><strong>Distance:</strong> ${info.distance}</p>
+                    <p><strong>Orbital Period:</strong> ${info.period}</p>
+                    ${distanceInfo}
+                </div>
+                <div class="info-section">
+                    <p>${info.facts}</p>
+                </div>
+                <div class="physics-tip">
+                    <strong>Physics Fact:</strong> ${getPhysicsFact(bodyKey)}
+                </div>
+            `;
+        }
+
+        function getPhysicsFact(bodyKey) {
+            const facts = {
+                earth: "Earth's gravity (9.8 m/s²) keeps our atmosphere and creates the perfect conditions for liquid water.",
+                moon: "The Moon's gravity causes Earth's tides and gradually slows Earth's rotation by 2ms per century.",
+                mars: "Mars has 38% of Earth's gravity, making a 100kg person weigh only 38kg on Mars!"
+            };
+            return facts[bodyKey] || "Gravity decreases with the square of distance - this is why orbits work!";
+        }
+
+        function toggleOrbits() {
+            gameState.showOrbits = !gameState.showOrbits;
+        }
+
+        function changeSpeed(delta) {
+            gameState.speed = Math.max(0.1, Math.min(10, gameState.speed + delta * 0.5));
+            document.getElementById('speedValue').textContent = gameState.speed.toFixed(1) + 'x';
+        }
+
+        function togglePause() {
+            gameState.paused = !gameState.paused;
+            document.querySelector('#speedControls button:last-child').textContent = gameState.paused ? '▶️ Play' : '⏸️ Pause';
+        }
+
+        // Game loop
+        function gameLoop() {
+            updatePositions();
+            
+            // Auto-follow focused body
+            if (gameState.focusedBody) {
+                const body = celestialBodies[gameState.focusedBody];
+                camera.x = -body.x;
+                camera.y = -body.y;
+            }
+            
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize
+        showFullSystem();
+        gameLoop();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'960bcdab85ee54da',t:'MTc1Mjc3Njk1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
